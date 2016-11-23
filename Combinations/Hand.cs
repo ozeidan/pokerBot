@@ -7,17 +7,12 @@ namespace Bot
 {
     class MyHand : IComparable
     {
-        List<Card> myCards;
-        List<Card> tableCards;
         SortedSet<Combination> combinations;
         Combination highest;
 
         public MyHand(List<Card> myCards, List<Card> tableCards)
         {
-            this.myCards = myCards;
-            this.tableCards = tableCards;
-
-            myCards.AddRange(tableCards);
+			myCards.AddRange(tableCards);
 
             combinations = CombDetector.detectCombinations(myCards);
 

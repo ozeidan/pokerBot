@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -33,10 +33,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HandEvaluator">
@@ -81,21 +77,12 @@
     <Compile Include="HandleGetter.cs" />
     <Compile Include="Data\PointStruct.cs" />
     <Compile Include="Exceptions\NoCardExceptioncs.cs" />
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="Data\Position.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\RECT.cs" />
     <Compile Include="Exceptions\WindowNotFoundException.cs" />
     <Compile Include="Control\Resizer.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -106,7 +93,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -156,162 +142,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HE1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HE2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HE3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HE4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HE5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HE6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HE7.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HE8.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HE9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HEA.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HEJ.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HEK.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\HEQ.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KA1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KA2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KA3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KA4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KA5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KA6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KA7.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KA8.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KA9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KAA.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KAJ.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KAK.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KAQ.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KR1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KR2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KR3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KR4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KR5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KR6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KR7.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KR8.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KR9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KRA.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KRJ.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KRK.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\KRQ.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PI1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PI2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PI3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PI4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PI5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PI6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PI7.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PI8.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PI9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PIA.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PIJ.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PIK.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Debug\karten\PIQ.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Source\" />
