@@ -1,0 +1,501 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BA443050-1B0F-49A3-9550-D36293F779BF}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bot</RootNamespace>
+    <AssemblyName>Bot</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HandEvaluator">
+      <HintPath>lib\HandEvaluator.dll</HintPath>
+    </Reference>
+    <Reference Include="Patagames.Ocr, Version=1.9.1.341, Culture=neutral, PublicKeyToken=c2dc709ce62c6191, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tesseract.Net.SDK.1.9.1\lib\net45\Patagames.Ocr.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Combinations\Combination.cs" />
+    <Compile Include="Combinations\CombComparer.cs" />
+    <Compile Include="Combinations\CombDetector.cs" />
+    <Compile Include="Detection\CardDetector.cs" />
+    <Compile Include="Data\Card.cs" />
+    <Compile Include="Control\MouseOperations.cs" />
+    <Compile Include="Control\BotControler.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Odds\CardConverter.cs" />
+    <Compile Include="Odds\OddsCalculator.cs" />
+    <Compile Include="Odds\HoleCardLookup.cs" />
+    <Compile Include="Odds\MonteCarlo.cs" />
+    <Compile Include="Exceptions\CompareExcepion.cs" />
+    <Compile Include="Combinations\Hand.cs" />
+    <Compile Include="Detection\Eye.cs" />
+    <Compile Include="Detection\NumberDetector.cs" />
+    <Compile Include="Detection\PlayerCount.cs" />
+    <Compile Include="Detection\Screenshot.cs" />
+    <Compile Include="Detection\TurnDetector.cs" />
+    <Compile Include="HandleGetter.cs" />
+    <Compile Include="Data\PointStruct.cs" />
+    <Compile Include="Exceptions\NoCardExceptioncs.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Position.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Data\RECT.cs" />
+    <Compile Include="Exceptions\WindowNotFoundException.cs" />
+    <Compile Include="Control\Resizer.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="tessdata\configs\config.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tessdata\eng.cube.bigrams">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tessdata\eng.cube.fold">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tessdata\eng.cube.lm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tessdata\eng.cube.nn">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tessdata\eng.cube.params">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tessdata\eng.cube.size">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tessdata\eng.cube.word-freq">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tessdata\eng.tesseract_cube.nn">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tessdata\eng.traineddata">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tessdata\pdf.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tessdata\pdf.ttx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HE1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HE2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HE3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HE4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HE5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HE6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HE7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HE8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HE9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HEA.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HEJ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HEK.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\HEQ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KA1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KA2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KA3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KA4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KA5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KA6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KA7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KA8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KA9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KAA.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KAJ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KAK.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KAQ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KR1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KR2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KR3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KR4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KR5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KR6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KR7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KR8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KR9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KRA.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KRJ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KRK.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\KRQ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PI1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PI2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PI3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PI4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PI5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PI6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PI7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PI8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PI9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PIA.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PIJ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PIK.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\karten\PIQ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Source\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HoleCardOdds.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HE1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HE2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HE3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HE4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HE5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HE6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HE7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HE8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HE9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HEA.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HEJ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HEK.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HEQ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KA1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KA2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KA3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KA4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KA5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KA6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KA7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KA8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KA9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KAA.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KAJ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KAK.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KAQ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KR1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KR2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KR3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KR4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KR5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KR6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KR7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KR8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KR9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KRA.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KRJ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KRK.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KRQ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PI1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PI2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PI3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PI4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PI5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PI6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PI7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PI8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PI9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PIA.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PIJ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PIK.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PIQ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="x64\tesseract.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\tesseract.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
