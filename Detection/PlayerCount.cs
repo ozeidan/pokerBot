@@ -4,9 +4,11 @@ using System.Drawing;
 
 namespace Bot.Detection
 {
-    class PlayerCount
+    internal class PlayerCount
     {
-        List<Point> relativePlayerPoints = new List<Point>()
+        private readonly IntPtr _pokerHandle;
+
+        private readonly List<Point> _relativePlayerPoints = new List<Point>
         {
             new Point(364, 868),
             new Point(134, 582),
@@ -18,43 +20,30 @@ namespace Bot.Detection
             new Point(1490, 870)
         };
 
-        private IntPtr pokerHandle;
-
 
         public PlayerCount(IntPtr pokerHandle)
         {
-            this.pokerHandle = pokerHandle;
+            this._pokerHandle = pokerHandle;
         }
 
-        private bool checkPlayerState(int player)
+        private bool CheckPlayerState(int player)
         {
-            Point playerPos = relativePlayerPoints[player - 1];
+            var playerPos = _relativePlayerPoints[player - 1];
 
-            Bitmap checkPixel = Screenshot.getRelativeScreenshot(playerPos, new Size(1, 1), pokerHandle);
+            var checkPixel = Screenshot.GetRelativeScreenshot(playerPos, new Size(1, 1), _pokerHandle);
 
-            if (checkPixel.GetPixel(0, 0).R > 100)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return checkPixel.GetPixel(0, 0).R > 100;
         }
 
-        public int playerCount()
+        private int playerCount()
         {
-            int count = 0;
+            var count = 0;
 
-            Resizer.resizeAndSwitch(pokerHandle);
+            Resizer.ResizeAndSwitch(_pokerHandle);
 
-            for (int i = 1; i <= 8; i++)
-            {
-                if (checkPlayerState(i))
-                {
+            for (var i = 1; i <= 8; i++)
+                if (CheckPlayerState(i))
                     count++;
-                }
-            }
 
             return count;
         }

@@ -1,75 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bot.Combinations
 {
-    class Combination : IComparable
+    internal class Combination : IComparable
     {
-        private HandType type;
-        private List<Card> cards;
-        private Card kicker;
-
-        public Combination(HandType type, List<Card> cards, Card kicker)
+        public Combination(HandType type, List<Data.Card> cards, Data.Card kicker)
         {
-            this.cards = cards;
-            this.type = type;
-            this.kicker = kicker;
+            Cards = cards;
+            Type = type;
+            Kicker = kicker;
         }
 
-        public Combination(HandType type, List<Card> cards)
+        public Combination(HandType type, List<Data.Card> cards)
         {
-            this.cards = cards;
-            this.type = type;
+            Cards = cards;
+            Type = type;
         }
 
-        public HandType Type
-        {
-            get
-            {
-                return type;
-            }
-        }
+        public HandType Type { get; }
 
-        public List<Card> Cards
-        {
+        public List<Data.Card> Cards { get; }
 
-            get
-            {
-                return cards;
-            }
-        }
-
-        public Card Kicker
-        {
-            get
-            {
-                return kicker;
-            }
-        }
-
+        public Data.Card Kicker { get; }
 
 
         public int CompareTo(object other)
         {
-            return CombComparer.compareTo(this, (Combination)other);
+            return CombComparer.CompareTo(this, (Combination) other);
         }
 
         public override string ToString()
         {
-            string s = "";
+            var s = "";
 
-            s += type.ToString() + ": ";
+            s += Type + ": ";
 
-            foreach(Card card in cards)
-            {
-                s += card.ToString() + ", ";
-            }
+            s = Cards.Aggregate(s, (current, card) => current + (card + ", "));
 
             return s.Substring(0, s.Length - 2);
         }
-
-
-
-
     }
 }

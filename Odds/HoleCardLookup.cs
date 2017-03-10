@@ -1,81 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
+using Bot.Properties;
 
 namespace Bot.Odds
 {
-    static class HoleCardLookup
+    internal static class HoleCardLookup
     {
-        private static Dictionary<String, List<Double>> table = new Dictionary<String, List<Double>>();
-        private static bool init = false;
+        private static readonly Dictionary<string, List<double>> Table = new Dictionary<string, List<double>>();
+        private static bool _init;
 
-        private static void loadTable()
+        private static void LoadTable()
         {
-            Regex regex = new Regex(@"(\d){1,2}\.(\d){2}");
+            var regex = new Regex(@"(\d){1,2}\.(\d){2}");
 
-            string data = Properties.Resources.HoleCardOdds;
-            List<string> words = data.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            foreach (string line in words)
+            var data = Resources.HoleCardOdds;
+            var words = data.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries).ToList();
+            foreach (var line in words)
             {
-                string pairName = line.Substring(0, 5);
+                var pairName = line.Substring(0, 5);
 
                 var matches = regex.Matches(line);
 
-                List<double> odds = new List<double>();
+                var odds = (from Match match in matches select double.Parse(match.Value, CultureInfo.InvariantCulture)).ToList();
 
-                foreach (Match match in matches)
-                {
-                    odds.Add(Double.Parse(match.Value, CultureInfo.InvariantCulture));
-                }
-
-                table.Add(pairName, odds);
+                Table.Add(pairName, odds);
             }
         }
 
 
-        public static double getOdds(List<Card> playerCards, int playerAmount)
+        public static double GetOdds(List<Data.Card> playerCards, int playerAmount)
         {
-            if (!init)
+            if (!_init)
             {
-                loadTable();
-                init = true;
+                LoadTable();
+                _init = true;
             }
 
             playerAmount--; //Da an der Stelle 0 der Tabelle die Odds bei einem Gegner stehen usw.
 
-            if(playerCards[0].Value < playerCards[1].Value)
-            {
-                playerCards = new List<Card>() { playerCards[1], playerCards[0] };
-            }
+            if (playerCards[0].Value < playerCards[1].Value)
+                playerCards = new List<Data.Card> {playerCards[1], playerCards[0]};
 
-            string entryName = parseCards(playerCards);
+            var entryName = ParseCards(playerCards);
 
-            return table[entryName][playerAmount];
+            return Table[entryName][playerAmount];
         }
 
 
-        private static string parseCards(List<Card> playerCards)
+        private static string ParseCards(List<Data.Card> playerCards)
         {
             if (playerCards.Count != 2)
-            {
                 throw new ArgumentException("Es gibt immer nur 2 Hole Cards!!");
-            }
 
-            string cards = CardConverter.convertCards(playerCards);
+            var cards = CardConverter.ConvertCards(playerCards);
 
-            string secondSuit;
-
-            if (playerCards[0].Suit == playerCards[1].Suit)
-                secondSuit = "s";
-            else
-                secondSuit = "h";
+            var secondSuit = playerCards[0].Suit == playerCards[1].Suit ? "s" : "h";
 
             return cards[0] + "s " + cards[3] + secondSuit;
         }
-
     }
 }

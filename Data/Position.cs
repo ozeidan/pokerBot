@@ -1,20 +1,20 @@
-﻿namespace Bot
+﻿namespace Bot.Data
 {
-    class Position
+    internal class Position
     {
-        public int x;
-        public int y;
+        public int X;
+        public int Y;
 
         public Position(int x, int y)
         {
-            this.x = x;
-            this.y = y;
+            X = x;
+            Y = y;
         }
 
         public Position()
         {
-            this.x = 0;
-            this.y = 0;
+            X = 0;
+            Y = 0;
         }
     }
 }

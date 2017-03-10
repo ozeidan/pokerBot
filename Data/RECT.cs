@@ -1,17 +1,16 @@
-﻿namespace Bot
+﻿namespace Bot.Data
 {
-    public struct RECT
+    public struct Rect
     {
-        public int left;
-        public int top;
-        public int right;
-        public int bottom;
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
 
 
         public override string ToString()
         {
-            return "left: " + left + " right: " + right + " top: " + top + " bottom: " + bottom;
-
+            return "Left: " + Left + " Right: " + Right + " Top: " + Top + " Bottom: " + Bottom;
         }
     }
 }

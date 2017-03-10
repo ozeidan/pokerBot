@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using Bot.Data;
+using Point = System.Drawing.Point;
 
 namespace Bot.Detection
 {
-    class Screenshot
+    internal class Screenshot
     {
         [DllImport("user32.dll", SetLastError = true)]
-        static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
+        private static extern bool GetWindowRect(IntPtr hwnd, out Rect lpRect);
 
-        private static Bitmap getScreen(Point position, Size size)
+        private static Bitmap GetScreen(Point position, Size size)
         {
             var image = new Bitmap(size.Width, size.Height);
             var gfx = Graphics.FromImage(image);
@@ -22,19 +20,19 @@ namespace Bot.Detection
             return image;
         }
 
-        public static Bitmap getRelativeScreenshot(Point position, Size size, IntPtr handle)
+        public static Bitmap GetRelativeScreenshot(Point position, Size size, IntPtr handle)
         {
-            RECT rect;
+            Rect rect;
             GetWindowRect(handle, out rect);
-            rect.left += 7;
+            rect.Left += 7;
 
-            rect.left *= 2;
-            rect.top *= 2;
+            rect.Left *= 2;
+            rect.Top *= 2;
 
-            position.X += rect.left;
-            position.Y += rect.top;
+            position.X += rect.Left;
+            position.Y += rect.Top;
 
-            return getScreen(position, size);
+            return GetScreen(position, size);
         }
     }
 }

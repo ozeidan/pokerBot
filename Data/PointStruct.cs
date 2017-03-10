@@ -1,8 +1,8 @@
-﻿namespace Bot
+﻿namespace Bot.Data
 {
-    struct POINT
+    internal struct Point
     {
-        public int x;
-        public int y;
+        public int X;
+        public int Y;
     }
 }

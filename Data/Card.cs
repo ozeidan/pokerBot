@@ -1,43 +1,57 @@
 ﻿using System;
 
-namespace Bot
+namespace Bot.Data
 {
-    public enum Suit { Herz, Karo, Kreuz, Pik, Error };
+    public enum Suit
+    {
+        Herz,
+        Karo,
+        Kreuz,
+        Pik,
+        Error
+    }
+
     public enum Value
     {
-        Zwei, Drei, Vier, Fünf, Sechs, Sieben, Acht,
-        Neun, Zehn, Bube, Dame, König, Ass, Error
-    };
+        Zwei,
+        Drei,
+        Vier,
+        Fünf,
+        Sechs,
+        Sieben,
+        Acht,
+        Neun,
+        Zehn,
+        Bube,
+        Dame,
+        König,
+        Ass,
+        Error
+    }
 
-    class Card : IComparable
+    internal class Card : IComparable
     {
-        // 0 - 3 -> Herz Karo Kreuz Pik
-        private Suit suit;
         // 0 - 12 -> Ass, 2, ..., 10, Bube, Dame, König
-        private Value cardValue;
-        
+        // 0 - 3 -> Herz Karo Kreuz Pik
+
 
         //You can intizialize the card with the enumerators...
         public Card(Suit suit, Value value)
         {
-            this.suit = suit;
-            this.cardValue = value;
+            Suit = suit;
+            Value = value;
         }
 
 
         //Or a string according to the recource files
-        public Card(String name)
+        public Card(string name)
         {
-            
-
             try
             {
                 if (name.Length != 3)
-                {
                     throw new ArgumentException();
-                }
 
-                char c = name[1];
+                var c = name[1];
                 int i;
 
                 switch (c)
@@ -58,8 +72,8 @@ namespace Bot
                         throw new ArgumentException();
                 }
 
-                this.suit = (Suit)i;
-                
+                Suit = (Suit) i;
+
                 c = name[2];
 
                 switch (c)
@@ -72,7 +86,7 @@ namespace Bot
                     case '7':
                     case '8':
                     case '9':
-                        i = ((int)Char.GetNumericValue(c)) - 2;
+                        i = (int) char.GetNumericValue(c) - 2;
                         break;
                     case '1':
                         i = 8;
@@ -93,63 +107,34 @@ namespace Bot
                         throw new ArgumentException();
                 }
 
-                this.cardValue = (Value)i;
-
-                
-
+                Value = (Value) i;
             }
             catch (ArgumentException)
             {
-                this.cardValue = Value.Error;
-                this.suit = Suit.Error;
+                Value = Value.Error;
+                Suit = Suit.Error;
             }
-
-
         }
 
+        public Value Value { get; }
 
+        public Suit Suit { get; }
+
+        public int CompareTo(object obj)
+        {
+            var compareCard = (Card) obj;
+
+            if (compareCard.Value > Value)
+                return -1;
+            if (compareCard.Value < Value)
+                return 1;
+            return 0;
+        }
 
 
         public override string ToString()
         {
-            return suit + " " + cardValue;
-
-        }
-
-        public int CompareTo(object obj)
-        {
-            Card compareCard = (Card)obj;
-
-            if (compareCard.cardValue > this.cardValue)
-            {
-                return -1;
-            }
-            else if (compareCard.cardValue < this.cardValue)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public Value Value
-        {
-            get
-            {
-                return cardValue;
-            }
-        }
-
-        public Suit Suit
-        {
-            get
-            {
-                return suit;
-            }
+            return Suit + " " + Value;
         }
     }
-
-
 }

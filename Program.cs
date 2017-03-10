@@ -1,42 +1,35 @@
-﻿using Bot.MyExceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace Bot
 {
-    class MainClass
+    internal class MainClass
     {
-        private static List<Player> playerList = new List<Player>();
+        private static readonly List<Player> playerList = new List<Player>();
 
-        public static void Main(String[] args)
+        public static void Main(string[] args)
         {
-            Thread myThread = new Thread(HandleGetter.getHandle);
-            myThread.Start();
+            // Start static function that searches for the windows we need and calls Release() on our semaphore when it finds one
+            var sema = new Semaphore(0, 5);
+            ThreadStart start = () => HandleGetter.FindHandles("PokerStars", "NHLE", ref sema);
+            var myThread = new Thread(start);
 
-            IntPtr handle;
 
             while (true)
             {
-                try
-                {
-                    handle = HandleGetter.Handle;
-
-                    Console.WriteLine(String.Format("Found Poker Window. Starting Bot {0}.", playerList.Count + 1));
-
-                    Player player = new Player(handle, playerList.Count + 1);
-                    playerList.Add(player);
-
-                    Thread thread = new Thread(player.play);
-                    thread.Start();
+                // Only passes through this if a new handle is present
+                sema.WaitOne();
 
 
-                }
-                catch (WindowNotFoundException)
-                {
+                var handle = HandleGetter.Handle;
+                Console.WriteLine($"Found Poker Window. Starting Bot {playerList.Count + 1}.");
 
-                }
-                Thread.Sleep(250);
+                var player = new Player(handle, playerList.Count + 1);
+                playerList.Add(player);
+
+                var thread = new Thread(player.Play);
+                thread.Start();
             }
         }
     }

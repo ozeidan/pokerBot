@@ -1,105 +1,103 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bot.Detection
 {
-    class Eye
+    internal class Eye
     {
-        private NumberDetector numberDetector;
-        private CardDetector cardDetector;
-        private TurnDetector turnDetector;
-        private PlayerCount count;
+        private readonly CardDetector _cardDetector;
+        private readonly PlayerCount _count;
+        private readonly NumberDetector _numberDetector;
+        private readonly RoundDetector _turnDetector;
 
         public Eye(IntPtr handle)
         {
-            numberDetector = new NumberDetector(handle);
-            cardDetector = new CardDetector(handle);
-            turnDetector = new TurnDetector(handle);
-            count = new PlayerCount(handle);
+            _numberDetector = new NumberDetector(handle);
+            _cardDetector = new CardDetector(handle);
+            _turnDetector = new RoundDetector(handle);
+            _count = new PlayerCount(handle);
         }
 
         /// <summary>
-        /// Returns the amount of money in the pot.
+        ///     Returns the amount of money in the pot.
         /// </summary>
         /// <returns>Amount of money in the pot.</returns>
-        public int getPotAmount()
+        public int GetPotAmount()
         {
-            return numberDetector.getPot();
+            return _numberDetector.GetPot();
         }
+
         /// <summary>
-        /// Returns the amount of money the player has.
+        ///     Returns the amount of money the player has.
         /// </summary>
         /// <returns>Amount of money the player has.</returns>
-        public int getMoney()
+        public int GetMoney()
         {
-            return numberDetector.GetHashCode();
+            return _numberDetector.GetHashCode();
         }
 
         /// <summary>
-        /// Returns the amount of money the player has to pay to stay in the game.
+        ///     Returns the amount of money the player has to pay to stay in the game.
         /// </summary>
         /// <returns>Amount of money the player has to pay to stay in the game.</returns>
-        public int getMinimumCall()
+        public int GetMinimumCall()
         {
-            return numberDetector.minimalContribution();
+            return _numberDetector.MinimalContribution();
         }
+
         /// <summary>
-        /// Returns the smallest amount of money that the player can raise or bet.
+        ///     Returns the smallest amount of money that the player can Raise or bet.
         /// </summary>
-        /// <returns>The smallest amount of money that the player can raise or bet.</returns>
-        public int getMinimalRaise()
+        /// <returns>The smallest amount of money that the player can Raise or bet.</returns>
+        public int GetMinimalRaise()
         {
-            return numberDetector.minimalRaise();
+            return _numberDetector.MinimalRaise();
         }
+
         /// <summary>
-        /// Returns the players cards.
+        ///     Returns the players cards.
         /// </summary>
         /// <returns>The players cards</returns>
-        public List<Card> getPlayerCards()
+        public List<Data.Card> GetPlayerCards()
         {
-            return cardDetector.getCards(true);
+            return _cardDetector.GetCards(true);
         }
+
         /// <summary>
-        /// Returns the cards on the table.
+        ///     Returns the cards on the table.
         /// </summary>
         /// <returns>Cards on the table.</returns>
-        public List<Card> getTableCards()
+        public List<Data.Card> GetTableCards()
         {
-            return cardDetector.getCards(false);
+            return _cardDetector.GetCards(false);
         }
 
 
         /// <summary>
-        /// Specifies wether it is the turn of the player or not.
+        ///     Specifies wether it is the turn of the player or not.
         /// </summary>
         /// <returns>Wether it is the turn of the player or not.</returns>
-        public bool myTurn()
+        public bool MyTurn()
         {
-            return turnDetector.myTurn();
+            return _turnDetector.MyTurn();
         }
 
         /// <summary>
-        /// Specifies wether the player can only call due to not having enough money to raise or not.
+        ///     Specifies wether the player can only call due to not having enough money to Raise or not.
         /// </summary>
-        /// <returns>Wether the player can only call due to not having enough money to raise or not.</returns>
-        public bool onlyCall()
+        /// <returns>Wether the player can only call due to not having enough money to Raise or not.</returns>
+        public bool OnlyCall()
         {
-            return turnDetector.onlyCall();
+            return _turnDetector.OnlyCall();
         }
 
         /// <summary>
-        /// Returns the amount of players that are still in the game.
+        ///     Returns the amount of players that are still in the game.
         /// </summary>
         /// <returns>Amount of players that are still in the game.</returns>
-        public int getPlayerCount()
+        public int GetPlayerCount()
         {
-            return count.playerCount();
+            return _count.playerCount();
         }
-
-
-
     }
 }

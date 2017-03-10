@@ -1,112 +1,91 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
-using Bot.Detection;
 using Bot.Control;
+using Bot.Detection;
 using Bot.Odds;
 
 namespace Bot
 {
-    class Player
+    internal class Player
     {
-        private Eye eye;
-        private BotControler control;
-        private int id;
-        
+        private readonly BotControler _control;
+        private readonly Eye _eye;
+        private readonly int _id;
+
 
         public Player(IntPtr pokerHandle, int id)
         {
-            eye = new Eye(pokerHandle);
-            control = new BotControler(pokerHandle);
-            this.id = id;
+            _eye = new Eye(pokerHandle);
+            _control = new BotControler(pokerHandle);
+            _id = id;
         }
 
-        public void play()
+        public void Play()
         {
             while (true)
             {
-                while (!eye.myTurn())
-                {
+                while (!_eye.MyTurn())
                     Thread.Sleep(2000);
-                }
 
-                var playerCards = eye.getPlayerCards();
-                var tableCards = eye.getTableCards();
+                var playerCards = _eye.GetPlayerCards();
+                var tableCards = _eye.GetTableCards();
                 var hand = new MyHand(playerCards, tableCards);
-                Console.WriteLine(String.Format("Player Hand: {0}", hand.BestCombination.ToString()));
-                
 
-                int playerCount = eye.getPlayerCount();
-
-                double minimumCallAmount = eye.getMinimumCall();
-                double potAmount = eye.getPotAmount();
+                Console.WriteLine($"Player Hand: {hand.BestCombination}");
 
 
-                if (!eye.onlyCall() && minimumCallAmount == 0)
+                var playerCount = _eye.GetPlayerCount();
+
+                double minimumCallAmount = _eye.GetMinimumCall();
+                double potAmount = _eye.GetPotAmount();
+
+
+                if (!_eye.OnlyCall() && minimumCallAmount == 0)
                 {
-                    control.check();
+                    _control.Check();
                     Console.WriteLine("Checking");
                 }
                 else
                 {
+                    var potOdds = minimumCallAmount / (minimumCallAmount + potAmount) * 100;
 
-                    
-                    double potOdds = minimumCallAmount / (minimumCallAmount + potAmount) * 100;
-
-                    double testNumber;
+                    double oddsOffset;
 
                     if (tableCards.Count == 0)
-                    {
-                        testNumber = (110 - minimumCallAmount) / 100;
-                    }
+                        oddsOffset = (110 - minimumCallAmount) / 100;
                     else
+                        oddsOffset = 0;
+
+
+                    var winOdds = OddsCalculator.CalculateOdds(playerCards, tableCards, playerCount);
+
+
+                    if (oddsOffset > 0)
                     {
-                        testNumber = 0;
+                        winOdds *= 1 + oddsOffset;
+                        Console.WriteLine($"Increasing Win Odds by {oddsOffset * 100:0,##}%");
                     }
 
-                    
 
-                    double winOdds = OddsCalculator.calculateOdds(playerCards, tableCards, playerCount);
-
-
-                    if(testNumber > 0)
-                    {
-                        winOdds *= 1 + testNumber;
-                        Console.WriteLine(String.Format("Increasing Win Odds by {0:0.00}%", (testNumber * 100)));
-                    }
-                    
-
-                    Console.WriteLine(String.Format("Player {0}: Pot Odds: {1:0.00} | Odds of winning {2}", id, potOdds, winOdds));
+                    Console.WriteLine($"Player {_id}: Pot Odds: {potOdds} | Odds of winning {winOdds}");
 
                     if (winOdds < potOdds)
                     {
                         Console.WriteLine("Folding");
-                        control.fold();
+                        _control.Fold();
                     }
                     else
                     {
                         Console.WriteLine("Calling");
-                        if (eye.onlyCall())
-                        {
-                            control.callAll();
-
-                        }
+                        if (_eye.OnlyCall())
+                            _control.CallAll();
                         else
-                        {
-                            control.check();
-                        }
+                            _control.Check();
                     }
                 }
 
                 Thread.Sleep(3000);
             }
-
-
         }
-
-
     }
 }

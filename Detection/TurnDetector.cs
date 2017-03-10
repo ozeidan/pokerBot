@@ -3,44 +3,36 @@ using System.Drawing;
 
 namespace Bot.Detection
 {
-    class TurnDetector
+    internal class RoundDetector
     {
+        private readonly IntPtr _pokerHandle;
+        private readonly Point _relativeTurn2Pos = new Point(1320, 1334);
+        // ToDo: Make detection dynamic, not hardcoded
+        private readonly Point _relativeTurnPos = new Point(1654, 1334);
 
-        private Point relativeTurnPos = new Point(1654, 1334);
-        private Point relativeTurn2Pos = new Point(1320, 1334);
-        private IntPtr pokerHandle;
-
-        public TurnDetector(IntPtr pokerHandle)
+        public RoundDetector(IntPtr pokerHandle)
         {
-            this.pokerHandle = pokerHandle;
+            _pokerHandle = pokerHandle;
         }
 
-        public Boolean myTurn()
+        public bool MyTurn()
         {
-            Resizer.resizeAndSwitch(pokerHandle);
-            return checkPixel(relativeTurnPos);
+            Resizer.ResizeAndSwitch(_pokerHandle);
+            return CheckPixel(_relativeTurnPos);
         }
 
-        public Boolean onlyCall()
+        public bool OnlyCall()
         {
-            Resizer.resizeAndSwitch(pokerHandle);
-            return !checkPixel(relativeTurn2Pos);
+            Resizer.ResizeAndSwitch(_pokerHandle);
+            return !CheckPixel(_relativeTurn2Pos);
         }
 
 
-        private Boolean checkPixel(Point point)
+        private bool CheckPixel(Point point)
         {
-            Bitmap bitmapPixel = Screenshot.getRelativeScreenshot(point, new Size(1, 1), pokerHandle);
+            var bitmapPixel = Screenshot.GetRelativeScreenshot(point, new Size(1, 1), _pokerHandle);
 
-            if (bitmapPixel.GetPixel(0, 0).R > 50)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
+            return bitmapPixel.GetPixel(0, 0).R > 50;
         }
     }
 }

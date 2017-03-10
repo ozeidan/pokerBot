@@ -1,39 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Bot.Data;
 
 namespace Bot.Odds
 {
     /// <summary>
-    /// Card for converting one or multiple MyCard-objects into a string that holds the commonly used card description.
+    ///     Card for converting one or multiple MyCard-objects into a string that holds the commonly used card description.
     /// </summary>
-    class CardConverter
+    internal class CardConverter
     {
-
-
-
-        public static string convertCards(List<Card> cards)
+        public static string ConvertCards(List<Data.Card> cards)
         {
-            string name = "";
-
-            foreach (Card card in cards)
-            {
-                name += convertCard(card) + " ";
-            }
+            var name = cards.Aggregate("", (current, card) => current + (ConvertCard(card) + " "));
 
             return name.Substring(0, name.Length - 1); //Leaving out the additional space
         }
 
 
-
-
-        private static string convertCard(Card card)
+        private static string ConvertCard(Data.Card card)
         {
-            string name = "";
+            var name = "";
 
-            string value = "";
+            var value = "";
 
             switch (card.Value)
             {
@@ -76,36 +65,37 @@ namespace Bot.Odds
                 case Value.Ass:
                     value = "A";
                     break;
+                case Value.Error:
+                    break;
                 default:
                     throw new Exception("Error Karte");
             }
 
-            string suit = "";
+            var suit = "";
 
             switch (card.Suit)
             {
-                case (Suit.Karo):
+                case Suit.Karo:
                     suit = "d";
                     break;
-                case (Suit.Herz):
+                case Suit.Herz:
                     suit = "h";
                     break;
-                case (Suit.Pik):
+                case Suit.Pik:
                     suit = "s";
                     break;
-                case (Suit.Kreuz):
+                case Suit.Kreuz:
                     suit = "c";
+                    break;
+                case Suit.Error:
                     break;
                 default:
                     throw new Exception("Error Karte");
-
             }
 
             name = value + suit;
 
             return name;
         }
-
-
     }
 }

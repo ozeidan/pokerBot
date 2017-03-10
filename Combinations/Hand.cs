@@ -1,47 +1,33 @@
-﻿using Bot.Combinations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bot.Combinations;
 
 namespace Bot
 {
-    class MyHand : IComparable
+    internal class MyHand : IComparable
     {
-        SortedSet<Combination> combinations;
-        Combination highest;
+        private readonly SortedSet<Combination> _combinations;
 
-        public MyHand(List<Card> myCards, List<Card> tableCards)
+        public MyHand(List<Data.Card> myCards, List<Data.Card> tableCards)
         {
-			myCards.AddRange(tableCards);
+            myCards.AddRange(tableCards);
 
-            combinations = CombDetector.detectCombinations(myCards);
+            _combinations = CombDetector.DetectCombinations(myCards);
 
-            highest = combinations.Last();
+            BestCombination = _combinations.Last();
         }
+
+        public Combination BestCombination { get; }
 
         public int CompareTo(object other)
         {
-            return Combinations.CombComparer.compareTo(highest, ((MyHand)other).highest);
-        }
-
-        public Combination BestCombination
-        {
-            get
-            {
-                return highest;
-            }
+            return CombComparer.CompareTo(BestCombination, ((MyHand) other).BestCombination);
         }
 
         public override string ToString()
         {
-            string s = "";
-
-            foreach(Combination comb in combinations)
-            {
-                s += comb.ToString() + System.Environment.NewLine;
-            }
-
-            return s;
+            return _combinations.Aggregate("", (current, comb) => current + (comb + Environment.NewLine));
         }
     }
 }

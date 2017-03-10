@@ -1,67 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using Bot.MyExceptions;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+using Bot.Exceptions;
 
 namespace Bot
 {
-    class HandleGetter
+    internal class HandleGetter
     {
-        [DllImport("user32.dll")]
-        static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
+        private static readonly Queue<IntPtr> Handles = new Queue<IntPtr>();
+        private static readonly List<IntPtr> UsedHandles = new List<IntPtr>();
 
-
-
-        private static Queue<IntPtr> handles = new Queue<IntPtr>();
-        private static List<IntPtr> usedHandles = new List<IntPtr>();
-        
         public static IntPtr Handle
         {
             get
             {
-                if(handles.Count != 0)
-                {
-                    return handles.Dequeue();
-                }
-                else
-                {
-                    throw new WindowNotFoundException();
-                }
+                if (Handles.Count != 0)
+                    return Handles.Dequeue();
+                throw new WindowNotFoundException();
             }
         }
 
-        public static void getHandle()
+        [DllImport("user32.dll")]
+        private static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
+
+        public static void FindHandles(string processName, string windowName, ref Semaphore sema)
         {
             while (true)
             {
-                var processlist = Process.GetProcesses().Where(p => p.MainWindowHandle != IntPtr.Zero && p.ProcessName != "explorer");
+                var processList =
+                    Process.GetProcesses().Where(p => p.MainWindowHandle != IntPtr.Zero && p.ProcessName == processName);
 
-                foreach (Process process in processlist)
+                foreach (var process in processList)
                 {
-                    if (process.ProcessName.Equals("PokerStars"))
-                    {
-                        IntPtr handle = process.MainWindowHandle;
-                        const int nChars = 256;
-                        StringBuilder Buff = new StringBuilder(nChars);
+                    var handle = process.MainWindowHandle;
+                    const int nChars = 256;
+                    var buff = new StringBuilder(nChars);
 
-                        if (GetWindowText(handle, Buff, nChars) > 0)
-                        {
-                            string s = Buff.ToString().Substring(0, 4);
-                            if (s.Equals("NLHE") && !usedHandles.Contains(handle))
-                            {
-                                handles.Enqueue(handle);
-                                usedHandles.Add(handle);
-                            }
-                        }
-                    }
+                    if (GetWindowText(handle, buff, nChars) <= 0)
+                        break;
+
+                    var name = buff.ToString();
+
+                    if (!name.Contains(windowName) || UsedHandles.Contains(handle))
+                        break;
+
+                    Handles.Enqueue(handle);
+                    UsedHandles.Add(handle);
+                    sema.Release();
                 }
                 Thread.Sleep(500);
             }
-
         }
     }
 }

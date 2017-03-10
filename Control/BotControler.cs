@@ -3,126 +3,125 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using Bot.Data;
 
 namespace Bot.Control
 {
-    class BotControler
+    internal class BotControler
     {
+        private readonly IntPtr _pokerHandle;
+
+        private Dictionary<string, Position> _posDict;
+
+
+        public BotControler(IntPtr pokerHandle)
+        {
+            this._pokerHandle = pokerHandle;
+            Init();
+        }
+
         [DllImport("User32.Dll")]
         private static extern long SetCursorPos(int x, int y);
 
         [DllImport("user32.dll")]
-        private static extern bool GetCursorPos(out POINT lpPoint);
+        private static extern bool GetCursorPos(out Point lpPoint);
 
         [DllImport("user32.dll", SetLastError = true)]
-        static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
+        private static extern bool GetWindowRect(IntPtr hwnd, out Rect lpRect);
 
         [DllImport("user32.dll")]
         public static extern void SwitchToThisWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
-        static extern IntPtr GetActiveWindow();
+        private static extern IntPtr GetActiveWindow();
 
-        private  Dictionary<string, Position> posDict;
-        private  IntPtr pokerHandle;
-
-
-
-        public BotControler(IntPtr pokerHandle)
+        private void Init()
         {
-            this.pokerHandle = pokerHandle;
-            init();
+            _posDict = new Dictionary<string, Position>
+            {
+                {"Fold", new Position(570, 670)},
+                {"call", new Position(740, 670)},
+                {"raiseButton", new Position(900, 670)},
+                {"raiseBox", new Position(726, 618)}
+            };
         }
 
-        private void init()
+        public void Fold()
         {
-            posDict = new Dictionary<string, Position>();
-            posDict.Add("fold", new Position(570, 670));
-            posDict.Add("call", new Position(740, 670));
-            posDict.Add("raiseButton", new Position(900, 670));
-            posDict.Add("raiseBox", new Position(726, 618));
+            ClickAt("Fold");
         }
 
-        public void fold()
+        public void Check()
         {
-            clickAt("fold");
+            ClickAt("call");
         }
 
-        public void check()
+        public void CallAll()
         {
-            clickAt("call");
+            ClickAt("raiseButton");
         }
 
-        public void callAll()
+        public void Raise(int amount)
         {
-            clickAt("raiseButton");
-        }
-
-        public void raise(int amount)
-        {
-            clickAt("raiseBox");
+            ClickAt("raiseBox");
 
 
-            for(int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
                 SendKeys.Send("{BS}");
                 Thread.Sleep(30);
                 SendKeys.Send("{DEL}");
                 Thread.Sleep(30);
-
             }
 
-            string s = amount.ToString();
+            var s = amount.ToString();
 
-            foreach(Char c in s)
+            foreach (var c in s)
             {
                 SendKeys.SendWait(c.ToString());
                 Thread.Sleep(100);
             }
 
-            clickAt("raiseButton");
+            ClickAt("raiseButton");
         }
-            
 
-        private void clickAt(string buttonName)
+
+        private void ClickAt(string buttonName)
         {
-            if (!posDict.ContainsKey(buttonName))
+            if (!_posDict.ContainsKey(buttonName))
                 throw new ArgumentException();
 
-            
-            Position pos = posDict[buttonName];
-            RECT rect;
 
-            GetWindowRect(pokerHandle, out rect);
-            moveAndClick(pos.x + rect.left, pos.y + rect.top);
+            var pos = _posDict[buttonName];
+            Rect rect;
+
+            GetWindowRect(_pokerHandle, out rect);
+            MoveAndClick(pos.X + rect.Left, pos.Y + rect.Top);
         }
-
-
 
 
         /// <summary>
-        /// Moves the mouse pointer to the specified location and simulates a left mouse click
+        ///     Moves the mouse pointer to the specified location and simulates a Left mouse click
         /// </summary>
         /// <param name="x">Horizontal coordinate</param>
         /// <param name="y">Vertical coordinate</param>
-
-        private  void moveAndClick(int x, int y)
+        private static void MoveAndClick(int x, int y)
         {
-            POINT startPos;
+            Point startPos;
             GetCursorPos(out startPos);
 
-            int deltaX = x - startPos.x;
-            int deltaY = y - startPos.y;
+            var deltaX = x - startPos.X;
+            var deltaY = y - startPos.Y;
 
-            int fraction = 10;
+            const int fraction = 10;
 
-            int currentX = startPos.x;
-            int currentY = startPos.y;
+            var currentX = startPos.X;
+            var currentY = startPos.Y;
 
-            for (int i = 1; i <= fraction; i++)
+            for (var i = 1; i <= fraction; i++)
             {
-                currentX += (int)deltaX / fraction;
-                currentY += (int)deltaY / fraction;
+                currentX += deltaX / fraction;
+                currentY += deltaY / fraction;
 
                 SetCursorPos(currentX, currentY);
 
@@ -143,13 +142,13 @@ namespace Bot.Control
 
             MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftUp);
         }
-        private void condSwitchWindow()
+
+        private void CondSwitchWindow()
         {
-            if (GetActiveWindow() != pokerHandle)
-            {
-                SwitchToThisWindow(pokerHandle);
-                Thread.Sleep(100);
-            }
+            if (GetActiveWindow() == _pokerHandle) return;
+
+            SwitchToThisWindow(_pokerHandle);
+            Thread.Sleep(100);
         }
     }
 }

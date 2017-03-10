@@ -5,119 +5,80 @@ using System.Text.RegularExpressions;
 
 namespace Bot.Detection
 {
-    class NumberDetector
+    internal class NumberDetector
     {
-        private Point relativePotPos = new Point(560, 426);
-        private Size potSize = new Size(842, 72);
-
-        private Point relativeCallPos = new Point(1317, 1343);
-        private Point relativeRaisePos = new Point(1660, 1343);
-        private Size callSize = new Size(262, 47);
-
-        private Point relativeMoneyPos = new Point(952, 1073);
-        private Point relativeMoneyPosRight = new Point(850, 1073);
-        private Point moneyCheckPoint = new Point(1080, 1080);
-        private Size moneySize = new Size(175, 35);
+        private readonly OcrApi _api = OcrApi.Create();
+        private readonly Size _callSize = new Size(262, 47);
+        private readonly Point _moneyCheckPoint = new Point(1080, 1080);
+        private readonly Size _moneySize = new Size(175, 35);
 
 
+        private readonly IntPtr _pokerHandle;
+        private readonly Size _potSize = new Size(842, 72);
 
-        private IntPtr pokerHandle;
+        private readonly Point _relativeCallPos = new Point(1317, 1343);
 
-        private OcrApi api = OcrApi.Create();
+        private readonly Point _relativeMoneyPos = new Point(952, 1073);
+        private readonly Point _relativeMoneyPosRight = new Point(850, 1073);
+        private readonly Point _relativePotPos = new Point(560, 426);
+        private readonly Point _relativeRaisePos = new Point(1660, 1343);
 
-        private TurnDetector turnDetect;
+        private readonly RoundDetector _turnDetect;
 
 
         public NumberDetector(IntPtr pokerHandle)
         {
-            this.pokerHandle = pokerHandle;
-            this.turnDetect = new TurnDetector(pokerHandle);
-            api.Init(Patagames.Ocr.Enums.Languages.English);
+            _pokerHandle = pokerHandle;
+            _turnDetect = new RoundDetector(pokerHandle);
+            _api.Init(Patagames.Ocr.Enums.Languages.English);
         }
 
-        public int getPot()
+        public int GetPot()
         {
-            Resizer.resizeAndSwitch(pokerHandle);
-            return getNumber(relativePotPos, potSize, cutPotBitmap);
-        }
-
-
-        public int minimalContribution()
-        {
-            Resizer.resizeAndSwitch(pokerHandle);
-            if (turnDetect.myTurn())
-            {
-                if (turnDetect.onlyCall())
-                {
-                    return getMinRaise();
-                }
-                else
-                {
-                    return getCall();
-                }
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public int minimalRaise()
-        {
-            Resizer.resizeAndSwitch(pokerHandle);
-            if (turnDetect.myTurn())
-            {
-                if (turnDetect.onlyCall())
-                {
-                    return 0;
-                }
-                else
-                {
-                    return getMinRaise();
-                }
-            }
-            else
-            {
-                return 0;
-            }
-
-        }
-
-        public int getMoney()
-        {
-            Bitmap bitmap = Screenshot.getRelativeScreenshot(moneyCheckPoint, new Size(1, 1), pokerHandle);
-            Point pos;
-
-            if (rgbSum(bitmap.GetPixel(0, 0)) > 150)
-            {
-                pos = relativeMoneyPosRight;
-            }
-            else
-            {
-                pos = relativeMoneyPos;
-            }
-
-
-            return getNumber(pos, moneySize, cutMoneyBitmap);
+            Resizer.ResizeAndSwitch(_pokerHandle);
+            return GetNumber(_relativePotPos, _potSize, CutPotBitmap);
         }
 
 
-        private int getCall()
+        public int MinimalContribution()
         {
-            return getNumber(relativeCallPos, callSize, cutCallBitmap);
+            Resizer.ResizeAndSwitch(_pokerHandle);
+            if (!_turnDetect.MyTurn()) return 0;
+            return _turnDetect.OnlyCall() ? GetMinRaise() : GetCall();
         }
 
-        private int getMinRaise()
+        public int MinimalRaise()
         {
-            return getNumber(relativeRaisePos, callSize, cutCallBitmap);
+            Resizer.ResizeAndSwitch(_pokerHandle);
+            if (!_turnDetect.MyTurn()) return 0;
+            return _turnDetect.OnlyCall() ? 0 : GetMinRaise();
+        }
+
+        public int GetMoney()
+        {
+            var bitmap = Screenshot.GetRelativeScreenshot(_moneyCheckPoint, new Size(1, 1), _pokerHandle);
+
+            var pos = rgbSum(bitmap.GetPixel(0, 0)) > 150 ? _relativeMoneyPosRight : _relativeMoneyPos;
+
+
+            return GetNumber(pos, _moneySize, CutMoneyBitmap);
         }
 
 
-
-        private int getNumber(Point pos, Size size, Func<Bitmap, Bitmap> cut)
+        private int GetCall()
         {
+            return GetNumber(_relativeCallPos, _callSize, CutCallBitmap);
+        }
 
-            Bitmap bitmap = Screenshot.getRelativeScreenshot(pos, size, pokerHandle);
+        private int GetMinRaise()
+        {
+            return GetNumber(_relativeRaisePos, _callSize, CutCallBitmap);
+        }
+
+
+        private int GetNumber(Point pos, Size size, Func<Bitmap, Bitmap> cut)
+        {
+            var bitmap = Screenshot.GetRelativeScreenshot(pos, size, _pokerHandle);
 
             try
             {
@@ -128,83 +89,71 @@ namespace Bot.Detection
                 return 0;
             }
 
-            string d = api.GetTextFromImage(bitmap);
+            string d = _api.GetTextFromImage(bitmap);
 
-            Regex regex = new Regex(@"(\d)+((\.)(\d)+)*");
-            Match match = regex.Match(d);
-            string matchString = match.Value;
+            var regex = new Regex(@"(\d)+((\.)(\d)+)*");
+            var match = regex.Match(d);
+            var matchString = match.Value;
 
             matchString = matchString.Replace(".", "");
 
             return int.Parse(matchString);
         }
 
-        private Bitmap cutPotBitmap(Bitmap potBitmap)
+        private static Bitmap CutPotBitmap(Bitmap potBitmap)
         {
-            int y = potBitmap.Height / 2;
-            int xLeft = 0;
+            var y = potBitmap.Height / 2;
+            var xLeft = 0;
 
             while (potBitmap.GetPixel(xLeft, y).G > 70)
-            {
                 xLeft++;
-            }
 
-            int xRight = potBitmap.Width - 1;
+            var xRight = potBitmap.Width - 1;
 
             while (potBitmap.GetPixel(xRight, y).G > 70)
-            {
                 xRight--;
-            }
 
-            Rectangle crop = new Rectangle(xLeft, 0, xRight - xLeft, potBitmap.Height);
+            var crop = new Rectangle(xLeft, 0, xRight - xLeft, potBitmap.Height);
 
             return potBitmap.Clone(crop, potBitmap.PixelFormat);
         }
 
-        private Bitmap cutCallBitmap(Bitmap callBitmap)
+        private Bitmap CutCallBitmap(Bitmap callBitmap)
         {
-            int y = callBitmap.Height / 2;
-            int xLeft = 0;
+            var y = callBitmap.Height / 2;
+            var xLeft = 0;
 
             while (rgbSum(callBitmap.GetPixel(xLeft, y)) < 400)
-            {
                 xLeft++;
-            }
 
-            int xRight = callBitmap.Width - 1;
+            var xRight = callBitmap.Width - 1;
 
             while (rgbSum(callBitmap.GetPixel(xRight, y)) < 400)
-            {
                 xRight--;
-            }
 
-            Rectangle crop = new Rectangle(Math.Max((xLeft - 20), 0), 0, Math.Min((xRight - xLeft + 30), callBitmap.Width), callBitmap.Height);
+            var crop = new Rectangle(Math.Max(xLeft - 20, 0), 0, Math.Min(xRight - xLeft + 30, callBitmap.Width),
+                callBitmap.Height);
 
             return callBitmap.Clone(crop, callBitmap.PixelFormat);
-
         }
 
-        private Bitmap cutMoneyBitmap(Bitmap moneyBitmap)
+        private Bitmap CutMoneyBitmap(Bitmap moneyBitmap)
         {
-            int y = moneyBitmap.Height / 2;
-            int xLeft = 0;
+            var y = moneyBitmap.Height / 2;
+            var xLeft = 0;
 
             while (moneyCutCheck(moneyBitmap.GetPixel(xLeft, y)))
-            {
                 xLeft++;
-            }
 
-            int xRight = moneyBitmap.Width - 1;
+            var xRight = moneyBitmap.Width - 1;
 
             while (moneyCutCheck(moneyBitmap.GetPixel(xRight, y)))
-            {
                 xRight--;
-            }
 
-            Rectangle crop = new Rectangle(Math.Max(0, xLeft - 20), 0, Math.Min(xRight - xLeft + 30, moneyBitmap.Width), moneyBitmap.Height);
+            var crop = new Rectangle(Math.Max(0, xLeft - 20), 0, Math.Min(xRight - xLeft + 30, moneyBitmap.Width),
+                moneyBitmap.Height);
 
             return moneyBitmap.Clone(crop, moneyBitmap.PixelFormat);
-
         }
 
         private int rgbSum(Color pixel)
@@ -215,15 +164,8 @@ namespace Bot.Detection
         private bool moneyCutCheck(Color pixel)
         {
             if (pixel.R > 100 && pixel.G > 100 && pixel.B > 100)
-            {
                 return false;
-            }
-            else
-            {
-                return true;
-            }
+            return true;
         }
-
-
     }
 }
