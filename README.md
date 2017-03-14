@@ -12,7 +12,7 @@ For gathering the information the pokerBot takes a screenshot of the poker sessi
 On the first round of betting (preflop) the pokerBot looks up the player's Odds from a look up table, which lists the odds depending on the cards the player has and the ammount of opponents that the player faces. In laters betting rounds odds are calculated via Monte Carlo Simulation. The pokerBot then decides on what to do considering the pot odds.
 
 ### Hand
-All interactoin with the Pokerstars program is implemented via user32.dll function calls to move the mouse and the .Net SendKeys() to enter the betting ammount.
+All interactions with the Pokerstars program are implemented via User32.dll function calls to move the mouse and the .Net SendKeys() to enter the betting ammount.
 
 ## Results
 
